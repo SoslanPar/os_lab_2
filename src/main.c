@@ -30,7 +30,7 @@ void* worker_1(void* arg){
 }
 
 int current_i = 0;
-pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
+pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER; // Статическая инициализация мьютекса
 void* worker_2(void* arg){
     Thread_data* data = (Thread_data*)arg;
         double local_max = 0.0;
@@ -39,9 +39,9 @@ void* worker_2(void* arg){
             int i;
 
             // захватываем индекс i
-            pthread_mutex_lock(&mutex); // Возвращаемое значение: 0 при успехе, код ошибки при неудаче.
+            pthread_mutex_lock(&mutex); // Возвращаемое значение: 0 при успехе, код ошибки при неудаче
             if (current_i >= data->count_points - 2) {
-                pthread_mutex_unlock(&mutex); // Возвращаемое значение: 0 при успехе, ошибка если мьютекс не был захвачен этим потоком.
+                pthread_mutex_unlock(&mutex); // Возвращаемое значение: 0 при успехе, ошибка если мьютекс не был захвачен этим потоком
                 break;  // больше i нет
             }
             i = current_i;
@@ -81,7 +81,7 @@ int main(int argc, char *argv[]){
 
     const char* base_path = "../test/";
     char full_path[256];
-    // sprintf - Записываем строки base_path и filename как "%s%s", то есть соединяем в переменную full_path
+    // sprintf - Записываем строки base_path и filename как "%s%s", то есть соединяем, в переменную full_path
     sprintf(full_path, "%s%s", base_path, filename);
     // printf("%s", full_path);
 
@@ -102,10 +102,6 @@ int main(int argc, char *argv[]){
         fprintf(stderr, "Error: Few points for triangle\n");
         return 1;
     }
-    // printf("Count of points: %d\n", count_points);
-    // for (int i = 0; i < count_points; ++i){
-    //     printf("%.2lf %.2lf %.2lf\n", points[i].x, points[i].y, points[i].z);
-    // }
 
     // ================================== Метод 1 =======================================
     // Замер времени
@@ -126,7 +122,7 @@ int main(int argc, char *argv[]){
             &threads[t],    // Куда сохранить идентификатор потока
             NULL,           // Атрибуты (NULL = по умолчанию, создание потока с настройками по умолчанию)
             worker_1,       // Функция, которую поток должен выполнить
-            &data[t]       // аргумент, который передаётся в эту функцию
+            &data[t]        // аргумент, который передаётся в эту функцию
         );
     }
 
